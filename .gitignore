@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+
+data/
+feat/
+feat_8s/
+feat_doublegamma/
+
+logs/
+logs_8s/
+logs_doublegamma/

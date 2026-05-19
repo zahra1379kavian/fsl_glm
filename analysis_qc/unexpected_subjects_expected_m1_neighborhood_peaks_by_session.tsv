@@ -1,0 +1,27 @@
+subject	session	dominant_hand	expected_contralateral_hemi	expected_side_mean_z_subjectavg	opposite_side_mean_z_subjectavg	expected_m1_shell_peak_z	x_mm	y_mm	z_mm	distance_to_expected_m1_mm	harvard_oxford_cortical	juelich	motor_sensory_related_label	feat_path
+sub01	ses1	R	left	-0.240563	2.105113	5.486	-56.0	-28.0	38.0	25.8				feat/group.gfeat/sub01-ses1.gfeat/cope1.feat
+sub01	ses2	R	left	-0.240563	2.105113	13.166	-56.0	-32.0	54.0	19.8				feat/group.gfeat/sub01-ses2.gfeat/cope1.feat
+sub02	ses1	R	left	-2.827651	-3.700169	10.915	-50.0	-20.0	54.0	12.8				feat/group.gfeat/sub02-ses1.gfeat/cope1.feat
+sub02	ses2	R	left	-2.827651	-3.700169	14.222	-22.0	-44.0	42.0	29.2				feat/group.gfeat/sub02-ses2.gfeat/cope1.feat
+sub07	ses1	R	left	-1.757541	-0.315741	5.014	-50.0	2.0	54.0	28.7				feat/group.gfeat/sub07-ses1.gfeat/cope1.feat
+sub07	ses2	R	left	-1.757541	-0.315741	3.741	-38.0	-52.0	64.0	29.1				feat/group.gfeat/sub07-ses2.gfeat/cope1.feat
+sub09	ses1	R	left	0.392602	0.874324	6.060	-50.0	-32.0	36.0	24.7				feat/group.gfeat/sub09-ses1.gfeat/cope1.feat
+sub09	ses2	R	left	0.392602	0.874324	6.019	-58.0	-46.0	52.0	30.0				feat/group.gfeat/sub09-ses2.gfeat/cope1.feat
+sub10	ses1	L	right	-0.335061	-0.451433	5.717	54.0	-40.0	58.0	22.7				feat/group.gfeat/sub10-ses1.gfeat/cope1.feat
+sub10	ses2	L	right	-0.335061	-0.451433	7.951	52.0	-50.0	58.0	29.6				feat/group.gfeat/sub10-ses2.gfeat/cope1.feat
+sub11	ses1	R	left	-0.098284	-0.450743	5.169	-62.0	-24.0	48.0	25.3				feat/group.gfeat/sub11-ses1.gfeat/cope1.feat
+sub11	ses2	R	left	-0.098284	-0.450743	5.893	-58.0	-30.0	54.0	21.0				feat/group.gfeat/sub11-ses2.gfeat/cope1.feat
+sub12	ses1	R	left	-0.079114	0.273231	6.992	-46.0	-42.0	40.0	25.4				feat/group.gfeat/sub12-ses1.gfeat/cope1.feat
+sub12	ses2	R	left	-0.079114	0.273231	7.605	-58.0	-32.0	48.0	23.0				feat/group.gfeat/sub12-ses2.gfeat/cope1.feat
+sub13	ses1	L	right	-2.349557	0.910601	5.315	48.0	4.0	56.0	29.7				feat/group.gfeat/sub13-ses1.gfeat/cope1.feat
+sub13	ses2	L	right	-2.349557	0.910601	4.025	18.0	-34.0	40.0	27.5				feat/group.gfeat/sub13-ses2.gfeat/cope1.feat
+sub15	ses1	R	left	0.091587	0.897810	6.020	-24.0	-16.0	76.0	25.7				feat/group.gfeat/sub15-ses1.gfeat/cope1.feat
+sub15	ses2	R	left	0.091587	0.897810	4.289	-14.0	-24.0	66.0	26.0				feat/group.gfeat/sub15-ses2.gfeat/cope1.feat
+sub18	ses1	R	left	0.830963	1.342757	5.797	-36.0	-34.0	68.0	15.7				feat/group.gfeat/sub18-ses1.gfeat/cope1.feat
+sub18	ses2	R	left	0.830963	1.342757	5.794	-50.0	-42.0	60.0	22.0				feat/group.gfeat/sub18-ses2.gfeat/cope1.feat
+sub20	ses1	L	right	-1.048252	-1.699895	5.245	52.0	-6.0	56.0	22.8				feat/group.gfeat/sub20-ses1.gfeat/cope1.feat
+sub20	ses2	L	right	-1.048252	-1.699895	4.769	46.0	-18.0	64.0	12.8				feat/group.gfeat/sub20-ses2.gfeat/cope1.feat
+sub23	ses1	R	left	-1.074517	-1.033217	6.562	-30.0	-30.0	74.0	20.6				feat/group.gfeat/sub23-ses1.gfeat/cope1.feat
+sub23	ses2	R	left	-1.074517	-1.033217	5.191	-36.0	-4.0	38.0	27.0				feat/group.gfeat/sub23-ses2.gfeat/cope1.feat
+sub24	ses1	R	left	-0.079217	-0.542090	5.703	-60.0	-18.0	48.0	24.2				feat/group.gfeat/sub24-ses1.gfeat/cope1.feat
+sub24	ses2	R	left	-0.079217	-0.542090	3.660	-38.0	-10.0	32.0	27.8				feat/group.gfeat/sub24-ses2.gfeat/cope1.feat
