@@ -8,8 +8,8 @@ The script discovers first-level FEAT outputs named like:
 
 For each subject/session with both run 1 and run 2, it writes one higher-level
 FSF using an existing fixed-effects design as the template. Existing completed
-outputs in feat/group.gfeat are skipped unless --overwrite is used. Partial
-outputs are regenerated with overwrite enabled for that job.
+outputs in outputs/feat/session_fixed.gfeat are skipped unless --overwrite is
+used. Partial outputs are regenerated with overwrite enabled for that job.
 """
 
 from __future__ import annotations
@@ -24,12 +24,12 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-BASE = Path(__file__).resolve().parent
-DEFAULT_TEMPLATE = BASE / "feat/group.gfeat/sub10-ses2.gfeat/design.fsf"
-DEFAULT_FIRSTLEVEL_DIR = BASE / "feat/firstlevel"
-DEFAULT_GROUP_DIR = BASE / "feat/group.gfeat"
-DEFAULT_FSF_DIR = BASE / "fsf/subject_fixed"
-DEFAULT_LOG_DIR = BASE / "logs/subject_fixed"
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_TEMPLATE = ROOT / "temporary/feat/group.gfeat/sub10-ses2.gfeat/design.fsf"
+DEFAULT_FIRSTLEVEL_DIR = ROOT / "outputs/feat/firstlevel"
+DEFAULT_GROUP_DIR = ROOT / "outputs/feat/session_fixed.gfeat"
+DEFAULT_FSF_DIR = ROOT / "outputs/fsf/session_fixed"
+DEFAULT_LOG_DIR = ROOT / "outputs/logs/session_fixed"
 
 FEAT_DIR_RE = re.compile(r"sub-pd(?P<sub>\d+)_ses-(?P<ses>\d+)_run-(?P<run>\d+)\.feat$")
 

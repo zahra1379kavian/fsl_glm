@@ -10,14 +10,14 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-BASE = Path(__file__).resolve().parent
-SOURCE_FSF = BASE / "feat/mixed_model.gfeat/design.fsf"
-REF_IMG = BASE / "feat/mixed_model.gfeat/cope1.feat/example_func.nii.gz"
-FSF_DIR = BASE / "fsf/mixed_model_sensitivity"
-QC_DIR = BASE / "analysis_qc"
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE_FSF = ROOT / "outputs/feat/mixed_model.gfeat/design.fsf"
+REF_IMG = ROOT / "outputs/feat/mixed_model.gfeat/cope1.feat/example_func.nii.gz"
+FSF_DIR = ROOT / "outputs/fsf/mixed_model_sensitivity"
+QC_DIR = ROOT / "outputs/analysis_qc"
 
-ROBUST_OUTPUT = BASE / "feat/mixed_model_robust"
-RESPONDER_OUTPUT = BASE / "feat/mixed_model_responder_only"
+ROBUST_OUTPUT = ROOT / "outputs/feat/mixed_model_robust"
+RESPONDER_OUTPUT = ROOT / "outputs/feat/mixed_model_responder_only"
 
 LEFT_M1_MM = (-38, -24, 56)
 RIGHT_M1_MM = (38, -24, 56)
@@ -203,7 +203,7 @@ def write_summary(inputs: list[InputFeat], responses: dict[int, SubjectResponse]
 
     notes = QC_DIR / "mixed_model_sensitivity_notes.txt"
     with notes.open("w") as f:
-        f.write("Derivative analyses from feat/mixed_model.gfeat/design.fsf\n")
+        f.write("Derivative analyses from outputs/feat/mixed_model.gfeat/design.fsf\n")
         f.write(f"Robust FLAME output base: {ROBUST_OUTPUT}\n")
         f.write(f"Responder-only output base: {RESPONDER_OUTPUT}\n")
         f.write(

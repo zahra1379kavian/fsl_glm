@@ -15,8 +15,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-BASE = Path("/home/zkavian/fsl_glm")
-DEFAULT_FEAT_ROOT = BASE / "feat/firstlevel"
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_FEAT_ROOT = ROOT / "outputs/feat/firstlevel"
 DEFAULT_STANDARD = Path("/usr/local/fsl/data/standard/MNI152_T1_2mm_brain.nii.gz")
 
 IDENTITY_MAT = """1 0 0 0

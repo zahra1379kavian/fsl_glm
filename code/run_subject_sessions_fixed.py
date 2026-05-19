@@ -13,12 +13,12 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-BASE = Path(__file__).resolve().parent
-DEFAULT_TEMPLATE = BASE / "feat/group.gfeat/sub11-ses1.gfeat/design.fsf"
-DEFAULT_SESSION_DIR = BASE / "feat_8s/session_fixed.gfeat"
-DEFAULT_SUBJECT_DIR = BASE / "feat_8s/subject_fixed.gfeat"
-DEFAULT_FSF_DIR = BASE / "fsf_8s/subject_fixed"
-DEFAULT_LOG_DIR = BASE / "logs_8s/subject_fixed"
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_TEMPLATE = ROOT / "temporary/feat_8s/subject_fixed.gfeat/sub11.gfeat/design.fsf"
+DEFAULT_SESSION_DIR = ROOT / "outputs/feat/session_fixed.gfeat"
+DEFAULT_SUBJECT_DIR = ROOT / "outputs/feat/subject_fixed.gfeat"
+DEFAULT_FSF_DIR = ROOT / "outputs/fsf/subject_fixed"
+DEFAULT_LOG_DIR = ROOT / "outputs/logs/subject_fixed"
 
 SESSION_RE = re.compile(r"sub(?P<sub>\d+)-ses(?P<ses>\d+)\.gfeat$")
 

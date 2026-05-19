@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Create and optionally run first-level FEAT jobs from one template design.fsf.
 
-Default behavior writes one run-specific FSF per row in run_table.tsv and does
-not start FEAT. Add --run when the generated FSFs look correct.
+Default behavior writes one run-specific FSF per row in outputs/run_table.tsv
+and does not start FEAT. Add --run when the generated FSFs look correct.
 """
 
 from __future__ import annotations
@@ -17,12 +17,12 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-BASE = Path("/home/zkavian/fsl_glm")
-DEFAULT_TEMPLATE = BASE / "feat/firstlevel.feat/design.fsf"
-DEFAULT_RUN_TABLE = BASE / "run_table.tsv"
-DEFAULT_FSF_DIR = BASE / "fsf/firstlevel"
-DEFAULT_OUTPUT_DIR = BASE / "feat/firstlevel"
-DEFAULT_LOG_DIR = BASE / "logs/firstlevel"
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_TEMPLATE = ROOT / "temporary/feat/firstlevel.feat/design.fsf"
+DEFAULT_RUN_TABLE = ROOT / "outputs/run_table.tsv"
+DEFAULT_FSF_DIR = ROOT / "outputs/fsf/firstlevel"
+DEFAULT_OUTPUT_DIR = ROOT / "outputs/feat/firstlevel"
+DEFAULT_LOG_DIR = ROOT / "outputs/logs/firstlevel"
 
 
 @dataclass(frozen=True)
@@ -158,6 +158,8 @@ def make_fsf(template: str, run: Run, output_dir: Path, overwrite: bool) -> str:
     fsf = replace_setting(fsf, "fmri(outputdir)", f'"{out_base}"')
     fsf = replace_setting(fsf, "fmri(npts)", str(npts))
     fsf = replace_setting(fsf, "feat_files(1)", f'"{strip_nii_gz(run.bold)}"')
+    fsf = replace_setting(fsf, "fmri(shape1)", "3")
+    fsf = replace_setting(fsf, "fmri(convolve1)", "3")
     fsf = replace_setting(fsf, "fmri(custom1)", f'"{run.ev}"')
     fsf = replace_setting(fsf, "fmri(featwatcher_yn)", "0")
     fsf = replace_setting(fsf, "fmri(overwrite_yn)", "1" if overwrite else "0")
@@ -200,6 +202,10 @@ def main() -> int:
     fsf_dir = args.fsf_dir.resolve()
     output_dir = args.output_dir.resolve()
     log_dir = args.log_dir.resolve()
+
+    if not template_path.exists():
+        print(f"Template FSF not found: {template_path}", file=sys.stderr)
+        return 1
 
     template = template_path.read_text()
     runs = filter_runs(read_run_table(run_table_path), args)
