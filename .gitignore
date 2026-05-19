@@ -17,6 +17,7 @@ logs_doublegamma_2s
 go_times_3col_2s
 
 temporary/
+outputs/
 
 *.tsv
 *.m
