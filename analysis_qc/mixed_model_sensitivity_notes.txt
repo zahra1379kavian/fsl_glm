@@ -1,4 +1,0 @@
-Derivative analyses from feat/mixed_model.gfeat/design.fsf
-Robust FLAME output base: /home/zkavian/fsl_glm/feat/mixed_model_robust
-Responder-only output base: /home/zkavian/fsl_glm/feat/mixed_model_responder_only
-Responder rule: subject-average mean zstat1 > 0 in either 8 mm sphere centered at left M1 (-38,-24,56) or right M1 (38,-24,56), computed from the original session-level inputs. This is circular and should be treated as descriptive/sensitivity only.

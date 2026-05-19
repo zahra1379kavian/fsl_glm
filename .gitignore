@@ -5,7 +5,18 @@ data/
 feat/
 feat_8s/
 feat_doublegamma/
+feat_doublegamma_2s/
 
 logs/
 logs_8s/
 logs_doublegamma/
+logs_doublegamma_2s/
+
+fsf_doublegamma_2s
+logs_doublegamma_2s
+go_times_3col_2s
+
+temporary/
+
+*.tsv
+*.m
