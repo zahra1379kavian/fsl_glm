@@ -150,6 +150,16 @@ def replace_setting(text: str, key: str, value: str) -> str:
     return new_text
 
 
+def resolve_template(path: Path) -> Path:
+    if path.exists():
+        return path
+    if path == DEFAULT_TEMPLATE:
+        generated = sorted(DEFAULT_FSF_DIR.glob("*_level1.fsf"))
+        if generated:
+            return generated[0]
+    return path
+
+
 def make_fsf(template: str, run: Run, output_dir: Path, overwrite: bool) -> str:
     npts = fslnvols(run.bold)
     out_base = output_dir / run.label
@@ -197,7 +207,7 @@ def main() -> int:
     if args.jobs < 1:
         raise ValueError("--jobs must be >= 1")
 
-    template_path = args.template.resolve()
+    template_path = resolve_template(args.template.resolve())
     run_table_path = args.run_table.resolve()
     fsf_dir = args.fsf_dir.resolve()
     output_dir = args.output_dir.resolve()

@@ -18,6 +18,10 @@ DEFAULT_SESSION_DIR = ROOT / "outputs/feat/session_fixed.gfeat"
 DEFAULT_OUTPUT_BASE = ROOT / "outputs/feat/mixed_model"
 DEFAULT_FSF_DIR = ROOT / "outputs/fsf/mixed_model"
 DEFAULT_LOG_DIR = ROOT / "outputs/logs/mixed_model"
+FALLBACK_TEMPLATE = Path(
+    "/usr/local/fsl/lib/python3.12/site-packages/fsl/tests/testdata/"
+    "test_feat/2ndlevel_1.gfeat/design.fsf"
+)
 
 SESSION_RE = re.compile(r"sub(?P<sub>\d+)-ses(?P<ses>\d+)\.gfeat$")
 
@@ -48,12 +52,22 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def replace_setting(text: str, key: str, value: str) -> str:
+def replace_setting(text: str, key: str, value: str, append_missing: bool = False) -> str:
     pattern = re.compile(rf"^(set {re.escape(key)}\s+).*$", flags=re.MULTILINE)
     new_text, count = pattern.subn(lambda match: f"{match.group(1)}{value}", text)
     if count == 0:
+        if append_missing:
+            return f"{text.rstrip()}\nset {key} {value}\n"
         raise ValueError(f"Missing setting: {key}")
     return new_text
+
+
+def resolve_template(path: Path) -> Path:
+    if path.exists():
+        return path
+    if path == DEFAULT_TEMPLATE and FALLBACK_TEMPLATE.exists():
+        return FALLBACK_TEMPLATE
+    return path
 
 
 def discover_inputs(session_dir: Path) -> tuple[list[SessionInput], list[str]]:
@@ -114,9 +128,14 @@ def make_fsf(template: str, inputs: list[SessionInput], output_base: Path, overw
         fsf = replace_setting(fsf, key, value)
 
     for index, item in enumerate(inputs, start=1):
-        fsf = replace_setting(fsf, f"feat_files({index})", f'"{item.path.resolve()}"')
-        fsf = replace_setting(fsf, f"fmri(evg{index}.1)", "1")
-        fsf = replace_setting(fsf, f"fmri(groupmem.{index})", "1")
+        fsf = replace_setting(
+            fsf,
+            f"feat_files({index})",
+            f'"{item.path.resolve()}"',
+            append_missing=True,
+        )
+        fsf = replace_setting(fsf, f"fmri(evg{index}.1)", "1", append_missing=True)
+        fsf = replace_setting(fsf, f"fmri(groupmem.{index})", "1", append_missing=True)
 
     return fsf
 
@@ -142,7 +161,7 @@ def gfeat_dir(output_base: Path) -> Path:
 
 def main() -> int:
     args = parse_args()
-    template_path = args.template.resolve()
+    template_path = resolve_template(args.template.resolve())
     session_dir = args.session_dir.resolve()
     output_base = args.output_base.resolve()
     fsf_dir = args.fsf_dir.resolve()

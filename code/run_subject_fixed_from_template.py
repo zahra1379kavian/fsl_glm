@@ -30,6 +30,10 @@ DEFAULT_FIRSTLEVEL_DIR = ROOT / "outputs/feat/firstlevel"
 DEFAULT_GROUP_DIR = ROOT / "outputs/feat/session_fixed.gfeat"
 DEFAULT_FSF_DIR = ROOT / "outputs/fsf/session_fixed"
 DEFAULT_LOG_DIR = ROOT / "outputs/logs/session_fixed"
+FALLBACK_TEMPLATE = Path(
+    "/usr/local/fsl/lib/python3.12/site-packages/fsl/tests/testdata/"
+    "test_feat/2ndlevel_realdata.gfeat/design.fsf"
+)
 
 FEAT_DIR_RE = re.compile(r"sub-pd(?P<sub>\d+)_ses-(?P<ses>\d+)_run-(?P<run>\d+)\.feat$")
 
@@ -156,6 +160,14 @@ def replace_setting(text: str, key: str, value: str) -> str:
     return new_text
 
 
+def resolve_template(path: Path) -> Path:
+    if path.exists():
+        return path
+    if path == DEFAULT_TEMPLATE and FALLBACK_TEMPLATE.exists():
+        return FALLBACK_TEMPLATE
+    return path
+
+
 def validate_pair(pair: FixedPair) -> list[str]:
     errors: list[str] = []
     required = (
@@ -232,7 +244,7 @@ def main() -> int:
     if args.jobs < 1:
         raise ValueError("--jobs must be >= 1")
 
-    template_path = args.template.resolve()
+    template_path = resolve_template(args.template.resolve())
     firstlevel_dir = args.firstlevel_dir.resolve()
     group_dir = args.group_dir.resolve()
     fsf_dir = args.fsf_dir.resolve()

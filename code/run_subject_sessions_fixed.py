@@ -19,6 +19,10 @@ DEFAULT_SESSION_DIR = ROOT / "outputs/feat/session_fixed.gfeat"
 DEFAULT_SUBJECT_DIR = ROOT / "outputs/feat/subject_fixed.gfeat"
 DEFAULT_FSF_DIR = ROOT / "outputs/fsf/subject_fixed"
 DEFAULT_LOG_DIR = ROOT / "outputs/logs/subject_fixed"
+FALLBACK_TEMPLATE = Path(
+    "/usr/local/fsl/lib/python3.12/site-packages/fsl/tests/testdata/"
+    "test_feat/2ndlevel_realdata.gfeat/design.fsf"
+)
 
 SESSION_RE = re.compile(r"sub(?P<sub>\d+)-ses(?P<ses>\d+)\.gfeat$")
 
@@ -97,6 +101,14 @@ def replace_setting(text: str, key: str, value: str) -> str:
     return new_text
 
 
+def resolve_template(path: Path) -> Path:
+    if path.exists():
+        return path
+    if path == DEFAULT_TEMPLATE and FALLBACK_TEMPLATE.exists():
+        return FALLBACK_TEMPLATE
+    return path
+
+
 def make_fsf(template: str, subject: SubjectSessions, output_dir: Path, overwrite: bool) -> str:
     n_sessions = len(subject.sessions)
     fsf = template
@@ -150,8 +162,9 @@ def main() -> int:
     if args.run and shutil.which(args.feat_cmd) is None:
         print(f"FEAT command not found: {args.feat_cmd}", file=sys.stderr)
         return 1
-    if not args.template.exists():
-        print(f"Template FSF not found: {args.template}", file=sys.stderr)
+    template_path = resolve_template(args.template.resolve())
+    if not template_path.exists():
+        print(f"Template FSF not found: {template_path}", file=sys.stderr)
         return 1
 
     subjects, warnings = discover_subjects(args.session_dir)
@@ -166,7 +179,7 @@ def main() -> int:
     args.fsf_dir.mkdir(parents=True, exist_ok=True)
     args.log_dir.mkdir(parents=True, exist_ok=True)
 
-    template = args.template.read_text()
+    template = template_path.read_text()
     fsfs: list[Path] = []
     skipped: list[Path] = []
     for subject in subjects:
