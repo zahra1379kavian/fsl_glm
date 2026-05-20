@@ -47,6 +47,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--fsf-dir", type=Path, default=DEFAULT_FSF_DIR)
     parser.add_argument("--log-dir", type=Path, default=DEFAULT_LOG_DIR)
     parser.add_argument("--feat-cmd", default="feat")
+    parser.add_argument(
+        "--exclude-sub",
+        type=int,
+        nargs="+",
+        default=[],
+        help="Subject numbers to omit from the mixed-effects model.",
+    )
     parser.add_argument("--run", action="store_true")
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()
@@ -60,6 +67,17 @@ def replace_setting(text: str, key: str, value: str, append_missing: bool = Fals
             return f"{text.rstrip()}\nset {key} {value}\n"
         raise ValueError(f"Missing setting: {key}")
     return new_text
+
+
+def strip_input_settings(text: str) -> str:
+    patterns = (
+        r'^set feat_files\(\d+\)\s+.*\n?',
+        r'^set fmri\(evg\d+\.1\)\s+.*\n?',
+        r'^set fmri\(groupmem\.\d+\)\s+.*\n?',
+    )
+    for pattern in patterns:
+        text = re.sub(pattern, "", text, flags=re.MULTILINE)
+    return f"{text.rstrip()}\n"
 
 
 def resolve_template(path: Path) -> Path:
@@ -99,7 +117,7 @@ def discover_inputs(session_dir: Path) -> tuple[list[SessionInput], list[str]]:
 
 def make_fsf(template: str, inputs: list[SessionInput], output_base: Path, overwrite: bool) -> str:
     n_inputs = len(inputs)
-    fsf = template
+    fsf = strip_input_settings(template)
     replacements = {
         "fmri(outputdir)": f'"{output_base.resolve()}"',
         "fmri(level)": "2",
@@ -138,6 +156,16 @@ def make_fsf(template: str, inputs: list[SessionInput], output_base: Path, overw
         fsf = replace_setting(fsf, f"fmri(groupmem.{index})", "1", append_missing=True)
 
     return fsf
+
+
+def write_input_manifest(fsf_dir: Path, inputs: list[SessionInput], excluded_inputs: list[SessionInput]) -> None:
+    manifest = fsf_dir / "mixed_model_inputs.tsv"
+    with manifest.open("w") as f:
+        f.write("status\tsubject\tsession\tpath\n")
+        for item in inputs:
+            f.write(f"included\tsub{item.sub:02d}\tses{item.ses}\t{item.path.resolve()}\n")
+        for item in excluded_inputs:
+            f.write(f"excluded\tsub{item.sub:02d}\tses{item.ses}\t{item.path.resolve()}\n")
 
 
 def run_feat(fsf: Path, log_path: Path, feat_cmd: str) -> int:
@@ -182,6 +210,21 @@ def main() -> int:
         print("No completed subject/session fixed-effects inputs found.", file=sys.stderr)
         return 1
 
+    requested_exclusions = set(args.exclude_sub)
+    excluded_inputs = [item for item in inputs if item.sub in requested_exclusions]
+    if requested_exclusions:
+        available_subjects = {item.sub for item in inputs}
+        missing_subjects = sorted(requested_exclusions - available_subjects)
+        inputs = [item for item in inputs if item.sub not in requested_exclusions]
+        if missing_subjects:
+            print(
+                "Warning: requested excluded subjects were not found in completed inputs: "
+                + ", ".join(f"sub{sub:02d}" for sub in missing_subjects)
+            )
+        if not inputs:
+            print("All completed inputs were excluded; no model generated.", file=sys.stderr)
+            return 1
+
     out_gfeat = gfeat_dir(output_base)
     if out_gfeat.exists() and (out_gfeat / "report.html").exists() and not args.overwrite:
         print(f"Skipped completed existing output: {out_gfeat}")
@@ -192,11 +235,16 @@ def main() -> int:
 
     fsf_path = fsf_dir / "mixed_model.fsf"
     fsf_path.write_text(make_fsf(template_path.read_text(), inputs, output_base, args.overwrite or out_gfeat.exists()))
+    write_input_manifest(fsf_dir, inputs, excluded_inputs)
 
     print(f"Template: {template_path}")
     print(f"Session fixed-effects dir: {session_dir}")
     print(f"Mixed-model inputs: {len(inputs)}")
+    if requested_exclusions:
+        print("Excluded subjects:", ", ".join(f"sub{sub:02d}" for sub in sorted(requested_exclusions)))
+        print(f"Excluded session inputs: {len(excluded_inputs)}")
     print(f"Generated FSF: {fsf_path}")
+    print(f"Input manifest: {fsf_dir / 'mixed_model_inputs.tsv'}")
     if warnings:
         print(f"Warnings: {len(warnings)}")
         for warning in warnings[:20]:
