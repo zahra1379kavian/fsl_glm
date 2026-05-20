@@ -202,6 +202,16 @@ def run_feat(fsf: Path, log_path: Path, feat_cmd: str) -> tuple[Path, int]:
     return fsf, result.returncode
 
 
+def completed_output(output_dir: Path, run: Run) -> bool:
+    feat_dir = output_dir / f"{run.label}.feat"
+    required = (
+        feat_dir / "report.html",
+        feat_dir / "stats/cope1.nii.gz",
+        feat_dir / "stats/varcope1.nii.gz",
+    )
+    return all(path.exists() for path in required)
+
+
 def main() -> int:
     args = parse_args()
     if args.jobs < 1:
@@ -237,8 +247,7 @@ def main() -> int:
     fsfs: list[Path] = []
     skipped_existing: list[Run] = []
     for run in runs:
-        completed_report = output_dir / f"{run.label}.feat" / "report.html"
-        if completed_report.exists() and not args.overwrite:
+        if completed_output(output_dir, run) and not args.overwrite:
             skipped_existing.append(run)
             continue
 
